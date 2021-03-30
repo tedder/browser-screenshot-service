@@ -1,8 +1,12 @@
 #!/usr/bin/env python3
 
 import responder
-import selenium.webdriver.support.expected_conditions as EC
+
+# yes, recursive is needed. it isn't all imported by default.
 import selenium
+import selenium.webdriver
+import selenium.webdriver.support.wait
+import selenium.webdriver.support.expected_conditions as EC
 import time
 import sys
 import os
@@ -18,7 +22,7 @@ log.setLevel(logging.DEBUG) # notset, debug, info, warning, error, critical
 api = responder.API()
 
 BASE_URL = os.environ.get('BASE_URL', 'https://globe.adsbexchange.com/')
-LOAD_SLEEP_TIME = int(os.environ.get('LOAD_SLEEP_TIME', 1))
+LOAD_SLEEP_TIME = float(os.environ.get('LOAD_SLEEP_TIME', 1))
 MAP_ARGS = os.environ.get('MAP_ARGS', 'zoom=11&hideSidebar&hideButtons&mapDim=0')
 PAGE_ZOOM = int(os.environ.get('PAGE_ZOOM', '100'))
 
@@ -71,8 +75,19 @@ def get_screenshot(icao):
   # https://www.selenium.dev/selenium/docs/api/py/webdriver_support/selenium.webdriver.support.wait.html
   # second argument to WebDriverWait = timeout in seconds
   #cond = EC.presence_of_all_elements_located( (selenium.webdriver.common.by.By.CSS_SELECTOR, "#map_canvas") )
-  cond = EC.visibility_of_all_elements_located( (selenium.webdriver.common.by.By.CSS_SELECTOR, "#map_canvas") )
-  elem0 = selenium.webdriver.support.wait.WebDriverWait(browser, 20).until(cond)
+  try:
+    cond = EC.visibility_of_all_elements_located( (selenium.webdriver.common.by.By.CSS_SELECTOR, "#map_canvas") )
+    elem0 = selenium.webdriver.support.wait.WebDriverWait(browser, 20).until(cond)
+    log.debug("okay, got the basic canvas.")
+  except selenium.common.exceptions.TimeoutException as ex:
+    log.warning("WE'LL DO IT LIVE.")
+
+  # this doesn't work. but it's an idea.
+  #cond = EC.presence_of_all_elements_located( (selenium.webdriver.common.by.By.CSS_SELECTOR, "#iconLayer") )
+  #elem1 = selenium.webdriver.support.wait.WebDriverWait(browser, 5).until(cond)
+  #log.debug("got the markers.")
+
+  #cond = EC.all_of(*conditions)
 
   if PAGE_ZOOM and PAGE_ZOOM != 100:
     log.debug(f"zooming: {PAGE_ZOOM}")
