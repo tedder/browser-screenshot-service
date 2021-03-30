@@ -65,7 +65,11 @@ def get_screenshot(icao):
   #co.add_argument("--delay 5")
   co.add_argument("--headless")
   co.add_argument("--no-sandbox")
-  co.add_argument("--incognito")
+  #co.add_argument("--incognito")
+
+  # thrash on the filesystem, better than the page crashing
+  # https://stackoverflow.com/a/53970825/659298
+  co.add_argument("--disable-dev-shm-usage")
   co.add_argument(f'window-size=1200x1600')
   browser = selenium.webdriver.Chrome(options=co)
 
