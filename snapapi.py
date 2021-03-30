@@ -31,6 +31,10 @@ async def snap_api(req, resp, *, icao):
   img = get_screenshot(icao)
   resp.content = img
 
+@api.route('/favicon.ico')
+async def snap_api(req, resp):
+  resp.content = one_by_one_pixel()
+
 def safe_url(u):
   '''Just seeing if things are fully formed.'''
   u = re.sub(r'[\'"]', '', u)
@@ -51,6 +55,7 @@ def get_screenshot(icao):
   start_t = time.time()
   icao = icao.upper()
   log.warning("hi.")
+  ss = one_by_one_pixel()
 
   if len(icao) != 6 or not re.match('^[A-F\d]*$', icao):
     log.error(f"bad ICAO: {icao}")
@@ -71,36 +76,36 @@ def get_screenshot(icao):
   # https://stackoverflow.com/a/53970825/659298
   co.add_argument("--disable-dev-shm-usage")
   co.add_argument(f'window-size=1200x1600')
-  browser = selenium.webdriver.Chrome(options=co)
+  with selenium.webdriver.Chrome(options=co) as browser:
 
-  browser.get(url)
+    browser.get(url)
 
-  # https://www.selenium.dev/selenium/docs/api/py/webdriver_support/selenium.webdriver.support.expected_conditions.html
-  # https://www.selenium.dev/selenium/docs/api/py/webdriver_support/selenium.webdriver.support.wait.html
-  # second argument to WebDriverWait = timeout in seconds
-  #cond = EC.presence_of_all_elements_located( (selenium.webdriver.common.by.By.CSS_SELECTOR, "#map_canvas") )
-  try:
-    cond = EC.visibility_of_all_elements_located( (selenium.webdriver.common.by.By.CSS_SELECTOR, "#map_canvas") )
-    elem0 = selenium.webdriver.support.wait.WebDriverWait(browser, 20).until(cond)
-    log.debug("okay, got the basic canvas.")
-  except selenium.common.exceptions.TimeoutException as ex:
-    log.warning("WE'LL DO IT LIVE.")
+    # https://www.selenium.dev/selenium/docs/api/py/webdriver_support/selenium.webdriver.support.expected_conditions.html
+    # https://www.selenium.dev/selenium/docs/api/py/webdriver_support/selenium.webdriver.support.wait.html
+    # second argument to WebDriverWait = timeout in seconds
+    #cond = EC.presence_of_all_elements_located( (selenium.webdriver.common.by.By.CSS_SELECTOR, "#map_canvas") )
+    try:
+      cond = EC.visibility_of_all_elements_located( (selenium.webdriver.common.by.By.CSS_SELECTOR, "#map_canvas") )
+      elem0 = selenium.webdriver.support.wait.WebDriverWait(browser, 20).until(cond)
+      log.debug("okay, got the basic canvas.")
+    except selenium.common.exceptions.TimeoutException as ex:
+      log.warning("WE'LL DO IT LIVE.")
 
-  # this doesn't work. but it's an idea.
-  #cond = EC.presence_of_all_elements_located( (selenium.webdriver.common.by.By.CSS_SELECTOR, "#iconLayer") )
-  #elem1 = selenium.webdriver.support.wait.WebDriverWait(browser, 5).until(cond)
-  #log.debug("got the markers.")
+    # this doesn't work. but it's an idea.
+    #cond = EC.presence_of_all_elements_located( (selenium.webdriver.common.by.By.CSS_SELECTOR, "#iconLayer") )
+    #elem1 = selenium.webdriver.support.wait.WebDriverWait(browser, 5).until(cond)
+    #log.debug("got the markers.")
 
-  #cond = EC.all_of(*conditions)
+    #cond = EC.all_of(*conditions)
 
-  if PAGE_ZOOM and PAGE_ZOOM != 100:
-    log.debug(f"zooming: {PAGE_ZOOM}")
-    browser.execute_script(f"document.body.style.zoom='{PAGE_ZOOM}%'")
+    if PAGE_ZOOM and PAGE_ZOOM != 100:
+      log.debug(f"zooming: {PAGE_ZOOM}")
+      browser.execute_script(f"document.body.style.zoom='{PAGE_ZOOM}%'")
 
-  # this sleep ensures the map is loaded. If everything but the map is loaded, increase the sleep.
-  # Even with the "conditions" above, having zero sleep tends to show poorly rendered map tiles.
-  time.sleep(LOAD_SLEEP_TIME)
-  ss = browser.get_screenshot_as_png()
+    # this sleep ensures the map is loaded. If everything but the map is loaded, increase the sleep.
+    # Even with the "conditions" above, having zero sleep tends to show poorly rendered map tiles.
+    time.sleep(LOAD_SLEEP_TIME)
+    ss = browser.get_screenshot_as_png()
 
   delta_t = time.time() - start_t
   log.debug(f"elapsed time: {delta_t:.2f}sec")
