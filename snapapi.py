@@ -25,6 +25,7 @@ BASE_URL = os.environ.get('BASE_URL', 'https://globe.adsbexchange.com/')
 LOAD_SLEEP_TIME = float(os.environ.get('LOAD_SLEEP_TIME', 1))
 MAP_ARGS = os.environ.get('MAP_ARGS', 'zoom=11&hideSidebar&hideButtons&mapDim=0')
 PAGE_ZOOM = int(os.environ.get('PAGE_ZOOM', '100'))
+DISABLE_SHM = bool(os.environ.get('DISABLE_SHM'))
 
 @api.route('/snap/{icao}')
 async def snap_api(req, resp, *, icao):
@@ -57,7 +58,8 @@ def get_screenshot(icao):
   log.warning("hi.")
   ss = one_by_one_pixel()
 
-  if len(icao) != 6 or not re.match('^[A-F\d]*$', icao):
+  # either no ICAO or the correct length.
+  if len(icao) and (len(icao) != 6 or not re.match('^[A-F\d]*$', icao)):
     log.error(f"bad ICAO: {icao}")
     return one_by_one_pixel()
   #url = f"https://globe.adsbexchange.com/?icao={icao}"
@@ -74,10 +76,11 @@ def get_screenshot(icao):
 
   # thrash on the filesystem, better than the page crashing
   # https://stackoverflow.com/a/53970825/659298
-  co.add_argument("--disable-dev-shm-usage")
+  if DISABLE_SHM:
+    console.log("disabling dev-shm-usage")
+    co.add_argument("--disable-dev-shm-usage")
   co.add_argument(f'window-size=1200x1600')
   with selenium.webdriver.Chrome(options=co) as browser:
-
     browser.get(url)
 
     # https://www.selenium.dev/selenium/docs/api/py/webdriver_support/selenium.webdriver.support.expected_conditions.html
