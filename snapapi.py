@@ -27,8 +27,9 @@ MAP_ARGS = os.environ.get('MAP_ARGS', 'zoom=11&hideSidebar&hideButtons&mapDim=0'
 PAGE_ZOOM = int(os.environ.get('PAGE_ZOOM', '100'))
 DISABLE_SHM = bool(os.environ.get('DISABLE_SHM'))
 
+@api.route('/snap/')
 @api.route('/snap/{icao}')
-async def snap_api(req, resp, *, icao):
+async def snap_api(req, resp, *, icao=''):
   img = get_screenshot(icao)
   resp.content = img
 
