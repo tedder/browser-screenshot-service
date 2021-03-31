@@ -26,6 +26,7 @@ LOAD_SLEEP_TIME = float(os.environ.get('LOAD_SLEEP_TIME', 1))
 MAP_ARGS = os.environ.get('MAP_ARGS', 'zoom=11&hideSidebar&hideButtons&mapDim=0')
 PAGE_ZOOM = int(os.environ.get('PAGE_ZOOM', '100'))
 DISABLE_SHM = bool(os.environ.get('DISABLE_SHM'))
+BROWSER = os.environ.get('BROWSER', 'chrome')
 
 @api.route('/snap')
 @api.route('/snap/{icao}')
@@ -50,6 +51,26 @@ def one_by_one_pixel():
   #return base64.b64decode('R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==')
   return b'GIF89a\x01\x00\x01\x00\x80\x00\x00\xff\xff\xff\x00\x00\x00!\xf9\x04\x01\x00\x00\x00\x00,\x00\x00\x00\x00\x01\x00\x01\x00\x00\x02\x02D\x01\x00;'
 
+def get_browser():
+  if BROWSER.lower() in ["firefox", "mozilla"]:
+    fo = selenium.webdriver.firefox.options.Options()
+    fo.headless = True
+    return selenium.webdriver.Firefox(options=fo)
+
+  else:
+    co = selenium.webdriver.chrome.options.Options()
+    #co.add_argument("--delay 5")
+    co.add_argument("--headless")
+    co.add_argument("--no-sandbox")
+    #co.add_argument("--incognito")
+
+    # thrash on the filesystem, better than the page crashing
+    # https://stackoverflow.com/a/53970825/659298
+    if DISABLE_SHM:
+      console.log("disabling dev-shm-usage")
+      co.add_argument("--disable-dev-shm-usage")
+    co.add_argument(f'window-size=1200x1600')
+    return selenium.webdriver.Chrome(options=co)
 
 def get_screenshot(icao):
   '''Returns PNG as a binary. Doesn't serve arbitrary URLs because it'd be a security hole.'''
@@ -69,19 +90,7 @@ def get_screenshot(icao):
   url = f'{_base}?icao={icao}&{MAP_ARGS}'
   log.info(f"pulling url: {url}")
 
-  co = selenium.webdriver.chrome.options.Options()
-  #co.add_argument("--delay 5")
-  co.add_argument("--headless")
-  co.add_argument("--no-sandbox")
-  #co.add_argument("--incognito")
-
-  # thrash on the filesystem, better than the page crashing
-  # https://stackoverflow.com/a/53970825/659298
-  if DISABLE_SHM:
-    console.log("disabling dev-shm-usage")
-    co.add_argument("--disable-dev-shm-usage")
-  co.add_argument(f'window-size=1200x1600')
-  with selenium.webdriver.Chrome(options=co) as browser:
+  with get_browser() as browser:
     browser.get(url)
 
     # https://www.selenium.dev/selenium/docs/api/py/webdriver_support/selenium.webdriver.support.expected_conditions.html
