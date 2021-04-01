@@ -12,6 +12,7 @@ import sys
 import os
 import re
 import logging
+import timeout_decorator
 
 logging.basicConfig(level=logging.CRITICAL, format='%(message)s')
 log = logging.getLogger(__file__)
@@ -50,13 +51,13 @@ def one_by_one_pixel():
   #return base64.b64decode('R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==')
   return b'GIF89a\x01\x00\x01\x00\x80\x00\x00\xff\xff\xff\x00\x00\x00!\xf9\x04\x01\x00\x00\x00\x00,\x00\x00\x00\x00\x01\x00\x01\x00\x00\x02\x02D\x01\x00;'
 
-
+@timeout_decorator.timeout(30)
 def get_screenshot(icao):
   '''Returns PNG as a binary. Doesn't serve arbitrary URLs because it'd be a security hole.'''
 
   start_t = time.time()
   icao = icao.upper()
-  log.warning("hi.")
+  log.warning(time.strftime('%Y-%m-%d %H:%M:%S') + " hi.")
   ss = one_by_one_pixel()
 
   # either no ICAO or the correct length.
@@ -73,6 +74,13 @@ def get_screenshot(icao):
   #co.add_argument("--delay 5")
   co.add_argument("--headless")
   co.add_argument("--no-sandbox")
+  # kx1t adds per https://stackoverflow.com/questions/48450594/selenium-timed-out-receiving-message-from-renderer
+  co.add_argument("start-maximized")
+  co.add_argument("enable-automation")
+  co.add_argument("--disable-infobars")
+  co.add_argument("--disable-dev-shm-usage")
+  co.add_argument("--disable-browser-side-navigation")
+  co.add_argument("--disable-gpu")
   #co.add_argument("--incognito")
 
   # thrash on the filesystem, better than the page crashing
