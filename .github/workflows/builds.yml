@@ -48,8 +48,6 @@ jobs:
         file: ./Dockerfile
         platforms: linux/amd64,linux/arm64,linux/arm/v7
         push: ${{ github.event_name != 'pull_request' }}
-        registry: ghcr.io
-        repository: ${{ github.repository_owner }}/browser-screenshot-service
         tags: |
           tedder42/browser-screenshot-service:latest
           ghcr.io/${{ github.repository_owner }}/browser-screenshot-service:latest
