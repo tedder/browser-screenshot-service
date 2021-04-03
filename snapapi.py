@@ -27,6 +27,7 @@ LOAD_SLEEP_TIME = float(os.environ.get('LOAD_SLEEP_TIME', 1))
 MAP_ARGS = os.environ.get('MAP_ARGS', 'zoom=11&hideSidebar&hideButtons&mapDim=0')
 PAGE_ZOOM = int(os.environ.get('PAGE_ZOOM', '100'))
 DISABLE_SHM = bool(os.environ.get('DISABLE_SHM'))
+MAXTIME = int(os.environ.get('MAXTIME', '30'))
 
 @api.route('/snap')
 @api.route('/snap/{icao}')
@@ -51,7 +52,7 @@ def one_by_one_pixel():
   #return base64.b64decode('R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==')
   return b'GIF89a\x01\x00\x01\x00\x80\x00\x00\xff\xff\xff\x00\x00\x00!\xf9\x04\x01\x00\x00\x00\x00,\x00\x00\x00\x00\x01\x00\x01\x00\x00\x02\x02D\x01\x00;'
 
-@timeout_decorator.timeout(30)
+@timeout_decorator.timeout(MAXTIME)
 def get_screenshot(icao):
   '''Returns PNG as a binary. Doesn't serve arbitrary URLs because it'd be a security hole.'''
 
