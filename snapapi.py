@@ -87,7 +87,7 @@ def get_screenshot(icao):
   # thrash on the filesystem, better than the page crashing
   # https://stackoverflow.com/a/53970825/659298
   if DISABLE_SHM:
-    console.log("disabling dev-shm-usage")
+    log.debug("disabling dev-shm-usage")
     co.add_argument("--disable-dev-shm-usage")
   co.add_argument(f'window-size=1200x1600')
   with selenium.webdriver.Chrome(options=co) as browser:
