@@ -27,6 +27,7 @@ LOAD_SLEEP_TIME = float(os.environ.get('LOAD_SLEEP_TIME', 1))
 MAP_ARGS = os.environ.get('MAP_ARGS', 'zoom=11&hideSidebar&hideButtons&mapDim=0')
 PAGE_ZOOM = int(os.environ.get('PAGE_ZOOM', '100'))
 DISABLE_SHM = bool(os.environ.get('DISABLE_SHM'))
+DISABLE_VIZ = bool(os.environ.get('DISABLE_VIZ'))
 MAXTIME = int(os.environ.get('MAXTIME', '30'))
 
 @api.route('/snap')
@@ -89,6 +90,9 @@ def get_screenshot(icao):
   if DISABLE_SHM:
     log.debug("disabling dev-shm-usage")
     co.add_argument("--disable-dev-shm-usage")
+  if DISABLE_VIZ:
+    log.debug("disabling VizDisplay")
+    co.add_argument("--disable-features=VizDisplayCompositor")
   co.add_argument(f'window-size=1200x1600')
   with selenium.webdriver.Chrome(options=co) as browser:
     browser.get(url)
