@@ -3,6 +3,7 @@ FROM ghcr.io/fredclausen/docker-baseimage:python
 ENV PYTHONUNBUFFERED=1
 ENV DEBIAN_FRONTEND=noninteractive
 
+COPY requirements.txt /opt/app/
 
 RUN set -x && \
 TEMP_PACKAGES=() && \
@@ -10,6 +11,7 @@ KEPT_PACKAGES=() && \
 KEPT_PACKAGES+=(python3-selenium) && \
 KEPT_PACKAGES+=(chromium) && \
 KEPT_PACKAGES+=(chromium-driver) && \
+TEMP_PACKAGES+=(gcc) &&\
 #
 # Install all these packages:
     apt-get update -q && \
@@ -17,15 +19,14 @@ KEPT_PACKAGES+=(chromium-driver) && \
         ${KEPT_PACKAGES[@]} \
         ${TEMP_PACKAGES[@]} && \
 #
+    pip3 install -r /opt/app/requirements.txt && \
+#
 # Clean up:
     apt-get remove -q -y ${TEMP_PACKAGES[@]} && \
     apt-get autoremove -q -o APT::Autoremove::RecommendsImportant=0 -o APT::Autoremove::SuggestsImportant=0 -y && \
     apt-get clean -q -y && \
     rm -rf /src/* /tmp/* /var/lib/apt/lists/*
 
-
-COPY requirements.txt /opt/app/
-RUN pip3 install -r /opt/app/requirements.txt
 
 COPY *.py /opt/app/
 
