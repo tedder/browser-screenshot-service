@@ -12,6 +12,8 @@ KEPT_PACKAGES+=(python3-selenium) && \
 KEPT_PACKAGES+=(chromium) && \
 KEPT_PACKAGES+=(chromium-driver) && \
 TEMP_PACKAGES+=(gcc) &&\
+TEMP_PACKAGES+=(python3-dev) && \
+TEMP_PACKAGES+=(python3-distutils-extra) && \
 #
 # Install all these packages:
     apt-get update -q && \
