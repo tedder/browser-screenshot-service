@@ -21,6 +21,7 @@ TEMP_PACKAGES+=(python3-distutils-extra) && \
         ${KEPT_PACKAGES[@]} \
         ${TEMP_PACKAGES[@]} && \
 #
+    pip3 install -U setuptools && \
     pip3 install -r /opt/app/requirements.txt && \
 #
 # Clean up:
