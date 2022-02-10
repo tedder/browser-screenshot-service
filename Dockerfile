@@ -1,4 +1,5 @@
-FROM ghcr.io/sdr-enthusiasts/docker-baseimage:python
+#FROM ghcr.io/sdr-enthusiasts/docker-baseimage:python
+FROM debian:stable-slim
 ENV PYTHONUNBUFFERED=1
 ENV DEBIAN_FRONTEND=noninteractive
 EXPOSE 5042
