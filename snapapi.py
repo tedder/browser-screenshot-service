@@ -39,7 +39,7 @@ async def snap_api(req, resp, *, icao=''):
 
 
 @api.route('/favicon.ico')
-async def snap_api(req, resp):
+async def favicon(req, resp):
   resp.content = one_by_one_pixel()
 
 
@@ -105,11 +105,11 @@ def get_screenshot(icao):
     # https://www.selenium.dev/selenium/docs/api/py/webdriver_support/selenium.webdriver.support.expected_conditions.html
     # https://www.selenium.dev/selenium/docs/api/py/webdriver_support/selenium.webdriver.support.wait.html
     # second argument to WebDriverWait = timeout in seconds
-    #cond = EC.presence_of_all_elements_located( (selenium.webdriver.common.by.By.CSS_SELECTOR, "#map_canvas") )
+    # cond = EC.presence_of_all_elements_located( (selenium.webdriver.common.by.By.CSS_SELECTOR, "#map_canvas") )
     try:
       cond = EC.visibility_of_all_elements_located((
-        selenium.webdriver.common.by.By.CSS_SELECTOR,
-        "#map_canvas",
+          selenium.webdriver.common.by.By.CSS_SELECTOR,
+          "#map_canvas",
       ))
       # elem0 = selenium.webdriver.support.wait.WebDriverWait(browser, 20).until(cond)
       selenium.webdriver.support.wait.WebDriverWait(browser, 20).until(cond)
