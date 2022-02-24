@@ -25,6 +25,6 @@ RUN apt-get update && \
 COPY *.py /opt/app/
 
 WORKDIR /opt/app/
-CMD /opt/app/snapapi.py
+CMD [ "/opt/app/snapapi.py" ]
 
 #MAP_ARGS='zoom=11&hideSidebar&hideButtons&mapDim=0.3' BASE_URL='http://192.168.3.67:8078/' python3 snapapi.py
