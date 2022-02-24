@@ -8,7 +8,7 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 COPY requirements.txt /opt/app/
 
 RUN apt-get update && \
-    apt install -y --no-install-recommends \
+    apt-get install -y --no-install-recommends \
       chromium \
       chromium-driver \
       gcc \
@@ -17,7 +17,7 @@ RUN apt-get update && \
       python3-selenium \
       vim \
       && \
-    pip3 install -r /opt/app/requirements.txt && \
+    python3 -m pip install --no-cache-dir -r /opt/app/requirements.txt && \
     # clean up
     apt-get autoremove -y && \
     rm -rf /src/* /tmp/* /var/lib/apt/lists/*
