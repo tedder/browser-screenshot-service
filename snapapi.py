@@ -8,7 +8,7 @@ import selenium.webdriver
 import selenium.webdriver.support.wait
 import selenium.webdriver.support.expected_conditions as EC
 import time
-import sys
+# import sys
 import os
 import re
 import logging
@@ -17,7 +17,7 @@ import timeout_decorator
 logging.basicConfig(level=logging.CRITICAL, format='%(message)s')
 log = logging.getLogger(__file__)
 log.propagate = True
-log.setLevel(logging.DEBUG) # notset, debug, info, warning, error, critical
+log.setLevel(logging.DEBUG)  # notset, debug, info, warning, error, critical
 
 
 api = responder.API()
@@ -30,15 +30,18 @@ DISABLE_SHM = bool(os.environ.get('DISABLE_SHM'))
 DISABLE_VIZ = bool(os.environ.get('DISABLE_VIZ'))
 MAXTIME = int(os.environ.get('MAXTIME', '30'))
 
+
 @api.route('/snap')
 @api.route('/snap/{icao}')
 async def snap_api(req, resp, *, icao=''):
   img = get_screenshot(icao)
   resp.content = img
 
+
 @api.route('/favicon.ico')
 async def snap_api(req, resp):
   resp.content = one_by_one_pixel()
+
 
 def safe_url(u):
   '''Just seeing if things are fully formed.'''
@@ -49,9 +52,11 @@ def safe_url(u):
     u += '/'
   return u
 
+
 def one_by_one_pixel():
-  #return base64.b64decode('R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==')
+  # return base64.b64decode('R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==')
   return b'GIF89a\x01\x00\x01\x00\x80\x00\x00\xff\xff\xff\x00\x00\x00!\xf9\x04\x01\x00\x00\x00\x00,\x00\x00\x00\x00\x01\x00\x01\x00\x00\x02\x02D\x01\x00;'
+
 
 @timeout_decorator.timeout(MAXTIME)
 def get_screenshot(icao):
@@ -63,7 +68,7 @@ def get_screenshot(icao):
   ss = one_by_one_pixel()
 
   # either no ICAO or the correct length.
-  if len(icao) and (len(icao) != 6 or not re.match('^[A-F\d]*$', icao)):
+  if len(icao) and (len(icao) != 6 or not re.match(r'^[A-F\d]*$', icao)):
     log.error(f"bad ICAO: {icao}")
     return one_by_one_pixel()
   # url = f"https://globe.adsbexchange.com/?icao={icao}"
@@ -93,7 +98,7 @@ def get_screenshot(icao):
   if DISABLE_VIZ:
     log.debug("disabling VizDisplay")
     co.add_argument("--disable-features=VizDisplayCompositor")
-  co.add_argument(f'window-size=1200x1600')
+  co.add_argument('window-size=1200x1600')
   with selenium.webdriver.Chrome(options=co) as browser:
     browser.get(url)
 
@@ -102,11 +107,15 @@ def get_screenshot(icao):
     # second argument to WebDriverWait = timeout in seconds
     #cond = EC.presence_of_all_elements_located( (selenium.webdriver.common.by.By.CSS_SELECTOR, "#map_canvas") )
     try:
-      cond = EC.visibility_of_all_elements_located( (selenium.webdriver.common.by.By.CSS_SELECTOR, "#map_canvas") )
-      elem0 = selenium.webdriver.support.wait.WebDriverWait(browser, 20).until(cond)
+      cond = EC.visibility_of_all_elements_located((
+        selenium.webdriver.common.by.By.CSS_SELECTOR,
+        "#map_canvas",
+      ))
+      # elem0 = selenium.webdriver.support.wait.WebDriverWait(browser, 20).until(cond)
+      selenium.webdriver.support.wait.WebDriverWait(browser, 20).until(cond)
       log.debug("okay, got the basic canvas.")
     except selenium.common.exceptions.TimeoutException as ex:
-      log.warning("WE'LL DO IT LIVE.")
+      log.warning(f"{ex}: WE'LL DO IT LIVE.")
 
     # this doesn't work. but it's an idea.
     # cond = EC.presence_of_all_elements_located( (selenium.webdriver.common.by.By.CSS_SELECTOR, "#iconLayer") )
