@@ -7,7 +7,8 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
 COPY requirements.txt /opt/app/
 
-RUN apt-get update && \
+RUN set -x && \
+    apt-get update && \
     apt-get install -y --no-install-recommends \
       chromium \
       chromium-driver \
