@@ -1,12 +1,26 @@
 FROM ghcr.io/sdr-enthusiasts/docker-baseimage:python
-#FROM debian:stable-slim
 ENV PYTHONUNBUFFERED=1
 ENV DEBIAN_FRONTEND=noninteractive
 EXPOSE 5042
 
-RUN apt update && apt install -y python3-selenium chromium chromium-driver python3-pip vim gcc python3-dev
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+
 COPY requirements.txt /opt/app/
-RUN pip3 install -r /opt/app/requirements.txt
+
+RUN apt-get update && \
+    apt install -y --no-install-recommends \
+      chromium \
+      chromium-driver \
+      gcc \
+      python3-dev \
+      python3-pip \
+      python3-selenium \
+      vim \
+      && \
+    pip3 install -r /opt/app/requirements.txt \
+    # clean up
+    apt-get autoremove -y && \
+    rm -rf /src/* /tmp/* /var/lib/apt/lists/*
 
 COPY *.py /opt/app/
 
