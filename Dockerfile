@@ -8,20 +8,31 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 COPY requirements.txt /opt/app/
 
 RUN set -x && \
+    TEMP_PACKAGES=() && \
+    KEPT_PACKAGES=() && \
+    # Required for building multiple packages
+    TEMP_PACKAGES+=(build-essential) && \
+    TEMP_PACKAGES+=(pkg-config) && \
+    # Dependencies
+    KEPT_PACKAGES+=(chromium) && \
+    KEPT_PACKAGES+=(chromium-driver) && \
+    TEMP_PACKAGES+=(python3-dev) && \
+    TEMP_PACKAGES+=(python3-pip) && \
+    KEPT_PACKAGES+=(python3-selenium) && \
+    # Install packages
     apt-get update && \
     apt-get install -y --no-install-recommends \
-      chromium \
-      chromium-driver \
-      gcc \
-      python3-dev \
-      python3-pip \
-      python3-selenium \
-      vim \
-      && \
+        ${KEPT_PACKAGES[@]} \
+        ${TEMP_PACKAGES[@]} \
+        && \
+    # Install pip packages
     python3 -m pip install --no-cache-dir -r /opt/app/requirements.txt && \
-    # clean up
+    # Clean-up
+    apt-get remove -y ${TEMP_PACKAGES[@]} && \
     apt-get autoremove -y && \
-    rm -rf /src/* /tmp/* /var/lib/apt/lists/*
+    rm -rf /src/* /tmp/* /var/lib/apt/lists/* && \
+    # Simple date/time versioning (for now)
+    date +%Y%m%d.%H%M > /CONTAINER_VERSION
 
 COPY *.py /opt/app/
 
