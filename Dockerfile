@@ -17,7 +17,7 @@ RUN apt-get update && \
       python3-selenium \
       vim \
       && \
-    pip3 install -r /opt/app/requirements.txt \
+    pip3 install -r /opt/app/requirements.txt && \
     # clean up
     apt-get autoremove -y && \
     rm -rf /src/* /tmp/* /var/lib/apt/lists/*
