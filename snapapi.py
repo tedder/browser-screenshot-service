@@ -66,14 +66,14 @@ def get_screenshot(icao):
   if len(icao) and (len(icao) != 6 or not re.match('^[A-F\d]*$', icao)):
     log.error(f"bad ICAO: {icao}")
     return one_by_one_pixel()
-  #url = f"https://globe.adsbexchange.com/?icao={icao}"
-  #url = f'https://globe.adsbexchange.com/?icao={icao}&zoom=11&hideSidebar&hideButtons'
+  # url = f"https://globe.adsbexchange.com/?icao={icao}"
+  # url = f'https://globe.adsbexchange.com/?icao={icao}&zoom=11&hideSidebar&hideButtons'
   _base = safe_url(BASE_URL)
   url = f'{_base}?icao={icao}&{MAP_ARGS}'
   log.info(f"pulling url: {url}")
 
   co = selenium.webdriver.chrome.options.Options()
-  #co.add_argument("--delay 5")
+  # co.add_argument("--delay 5")
   co.add_argument("--headless")
   co.add_argument("--no-sandbox")
   # kx1t adds per https://stackoverflow.com/questions/48450594/selenium-timed-out-receiving-message-from-renderer
@@ -83,7 +83,7 @@ def get_screenshot(icao):
   co.add_argument("--disable-dev-shm-usage")
   co.add_argument("--disable-browser-side-navigation")
   co.add_argument("--disable-gpu")
-  #co.add_argument("--incognito")
+  # co.add_argument("--incognito")
 
   # thrash on the filesystem, better than the page crashing
   # https://stackoverflow.com/a/53970825/659298
@@ -109,11 +109,11 @@ def get_screenshot(icao):
       log.warning("WE'LL DO IT LIVE.")
 
     # this doesn't work. but it's an idea.
-    #cond = EC.presence_of_all_elements_located( (selenium.webdriver.common.by.By.CSS_SELECTOR, "#iconLayer") )
-    #elem1 = selenium.webdriver.support.wait.WebDriverWait(browser, 5).until(cond)
-    #log.debug("got the markers.")
+    # cond = EC.presence_of_all_elements_located( (selenium.webdriver.common.by.By.CSS_SELECTOR, "#iconLayer") )
+    # elem1 = selenium.webdriver.support.wait.WebDriverWait(browser, 5).until(cond)
+    # log.debug("got the markers.")
 
-    #cond = EC.all_of(*conditions)
+    # cond = EC.all_of(*conditions)
 
     if PAGE_ZOOM and PAGE_ZOOM != 100:
       log.debug(f"zooming: {PAGE_ZOOM}")
@@ -128,6 +128,7 @@ def get_screenshot(icao):
   log.debug(f"elapsed time: {delta_t:.2f}sec")
 
   return ss
+
 
 if __name__ == '__main__':
   api.run(address='0.0.0.0')
