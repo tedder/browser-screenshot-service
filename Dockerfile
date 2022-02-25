@@ -18,7 +18,7 @@ RUN set -x && \
     KEPT_PACKAGES+=(chromium-driver) && \
     TEMP_PACKAGES+=(python3-dev) && \
     TEMP_PACKAGES+=(python3-pip) && \
-    KEPT_PACKAGES*=(python3-selenium) && \
+    KEPT_PACKAGES+=(python3-selenium) && \
     
     # Install packages
     apt-get update && \
