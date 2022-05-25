@@ -19,20 +19,20 @@ RUN set -x && \
     TEMP_PACKAGES+=(python3-dev) && \
     TEMP_PACKAGES+=(python3-pip) && \
     KEPT_PACKAGES+=(python3-selenium) && \
-    
-    # Install packages
+    \
+    # Install packages \
     apt-get update && \
     apt-get install -y --no-install-recommends \
         "${KEPT_PACKAGES[@]}" \
         "${TEMP_PACKAGES[@]}" \
         && \
-    # Install pip packages
+    # Install pip packages \
     python3 -m pip install --no-cache-dir -r /opt/app/requirements.txt && \
-    # Clean-up
+    # Clean-up \
     apt-get remove -y "${TEMP_PACKAGES[@]}" && \
     apt-get autoremove -y && \
     rm -rf /src/* /tmp/* /var/lib/apt/lists/* && \
-    # Simple date/time versioning (for now)
+    # Simple date/time versioning (for now) \
     date +%Y%m%d.%H%M > /CONTAINER_VERSION
 
 COPY *.py /opt/app/
