@@ -1,4 +1,5 @@
 FROM ghcr.io/sdr-enthusiasts/docker-baseimage:python
+LABEL org.opencontainers.image.source https://github.com/tedder/browser-screenshot-service
 ENV PYTHONUNBUFFERED=1
 ENV DEBIAN_FRONTEND=noninteractive
 EXPOSE 5042
