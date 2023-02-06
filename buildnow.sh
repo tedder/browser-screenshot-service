@@ -1,14 +1,37 @@
 #!/bin/bash
-#
+# shellcheck disable=SC2086,SC2162
+
+
+[[ "$1" != "" ]] && BRANCH="$1" || BRANCH="$(git branch --show-current)"
+[[ "$BRANCH" == "main" ]] && TAG="latest" || TAG="$BRANCH"
+[[ "$ARCHS" == "" ]] && ARCHS="linux/armhf,linux/arm64,linux/amd64"
+
+BASETARGET1=ghcr.io/kx1t
+BASETARGET2=kx1t
+
+IMAGE1="$BASETARGET1/screenshot:$TAG"
+IMAGE2="$BASETARGET2/screenshot:$TAG"
+
+echo "press enter to start building $IMAGE1 and $IMAGE2 from $BRANCH"
+
+read
+
+git checkout $BRANCH
+
+starttime="$(date +%s)"
+# rebuild the container
 set -x
 
-[[ "$1" != "" ]] && BRANCH="$1" || BRANCH=main
-[[ "$BRANCH" == "main" ]] && TAG="latest" || TAG="$BRANCH"
-[[ -z "$ARCHS" ]] && ARCHS="linux/armhf,linux/arm64,linux/amd64"
-# rebuild the container
-git checkout $BRANCH || exit 2
+# git pull -a
+# cp -f Dockerfile Dockerfile.tmp-backup
+# if [[ "$(uname -s)" == "Darwin" ]]
+# then
+#     sed -i  '' 's/##BRANCH##/'"$BRANCH"'/g' Dockerfile
+# else
+#     sed -i 's/##BRANCH##/'"$BRANCH"'/g' Dockerfile
+# fi
 
-git pull
-
-#DOCKER_BUILDKIT=1 docker buildx build --progress=plain --compress --push $2 --platform linux/armhf,linux/arm64,linux/amd64,linux/i386 --tag kx1t/screenshot:$TAG .
-DOCKER_BUILDKIT=1 docker buildx build --compress --push $2 --platform $ARCHS --tag kx1t/screenshot:$TAG .
+docker buildx build -f Dockerfile --compress --push $2 --platform $ARCHS --tag "$IMAGE1" .
+[[ $? ]] && docker buildx build --compress --push $2 --platform $ARCHS --tag $IMAGE2 .
+# mv -f Dockerfile.tmp-backup Dockerfile
+echo "Total build time: $(( $(date +%s) - starttime )) seconds"
