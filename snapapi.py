@@ -22,7 +22,7 @@ log.setLevel(logging.DEBUG)  # notset, debug, info, warning, error, critical
 
 api = responder.API()
 
-BASE_URL = os.environ.get('BASE_URL', 'https://globe.adsbexchange.com/')
+BASE_URL = os.environ.get('BASE_URL', 'https://globe.adsb.lol/')
 LOAD_SLEEP_TIME = float(os.environ.get('LOAD_SLEEP_TIME', 1))
 MAP_ARGS = os.environ.get('MAP_ARGS', 'zoom=11&hideSidebar&hideButtons&mapDim=0')
 PAGE_ZOOM = int(os.environ.get('PAGE_ZOOM', '100'))
