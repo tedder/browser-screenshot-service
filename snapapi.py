@@ -29,7 +29,7 @@ PAGE_ZOOM = int(os.environ.get('PAGE_ZOOM', '100'))
 DISABLE_SHM = bool(os.environ.get('DISABLE_SHM'))
 DISABLE_VIZ = bool(os.environ.get('DISABLE_VIZ'))
 MAXTIME = int(os.environ.get('MAXTIME', '30'))
-
+WINDOW_SIZE = os.environ.get('WINDOW_SIZE', '1200x1600')
 
 @api.route('/snap')
 @api.route('/snap/{icao}')
@@ -98,7 +98,7 @@ def get_screenshot(icao):
   if DISABLE_VIZ:
     log.debug("disabling VizDisplay")
     co.add_argument("--disable-features=VizDisplayCompositor")
-  co.add_argument('window-size=1200x1600')
+  co.add_argument(f'window-size={WINDOW_SIZE}')
   with selenium.webdriver.Chrome(options=co) as browser:
     browser.get(url)
 
