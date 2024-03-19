@@ -1,5 +1,8 @@
 #force typesystem to 0.2.5 to fix bug in responder
 #typesystem==0.4.1
+#cython
+#uvicorn>=0.27.0
+#httptools>=0.6.1
 typesystem==0.2.5
 responder==2.0.7
 timeout-decorator==0.5.0

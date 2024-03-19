@@ -19,7 +19,9 @@ RUN set -x && \
     KEPT_PACKAGES+=(chromium-driver) && \
     TEMP_PACKAGES+=(python3-dev) && \
     TEMP_PACKAGES+=(python3-pip) && \
+    TEMP_PACKAGES+=(python3-httptools) && \
     KEPT_PACKAGES+=(python3-selenium) && \
+    KEPT_PACKAGES+=(python3-uvicorn) && \
     \
     # Install packages \
     apt-get update && \
@@ -28,7 +30,7 @@ RUN set -x && \
         "${TEMP_PACKAGES[@]}" \
         && \
     # Install pip packages \
-    python3 -m pip install --no-cache-dir -r /opt/app/requirements.txt && \
+    python3 -m pip install --no-cache-dir --break-system-packages -r /opt/app/requirements.txt && \
     # Clean-up \
     apt-get remove -y "${TEMP_PACKAGES[@]}" && \
     apt-get autoremove -y && \
