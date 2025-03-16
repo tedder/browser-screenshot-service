@@ -23,7 +23,7 @@ log.propagate = True
 log.setLevel(logging.DEBUG)  # notset, debug, info, warning, error, critical
 
 
-api = responder.API()
+api = responder.API(enable_hsts=False)
 
 #BASE_URL = os.environ.get('BASE_URL', 'https://adsb.lol/')
 print("EEE", os.environ)
