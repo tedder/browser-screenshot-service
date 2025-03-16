@@ -24,8 +24,8 @@ on:
 #  - REPO: repo name on dockerhub
 #  - IMAGE: image name on dockerhub
 env:
-  GHCR_IMAGE: ${{ github.repository }}
-  GHCR_REGISTRY: ghcr.io
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
 
 jobs:
 
