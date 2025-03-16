@@ -102,29 +102,6 @@ jobs:
           tags: ghcr.io/${{ env.GHCR_IMAGE }}:latest
           labels: ${{ steps.meta.outputs.labels }}
 
-      # Get version from "latest"
-      - name: Get latest image version
-        run: |
-          docker pull "ghcr.io/${{ env.GHCR_IMAGE }}:latest"
-          echo "VERSION_TAG=$(docker run --rm --entrypoint cat "ghcr.io/${{ env.GHCR_IMAGE }}:latest" /CONTAINER_VERSION)" >> $GITHUB_ENV
-
-      # Show version from "latest"
-      - name: Show latest image version
-        run: |
-          echo "ghcr.io/${{ env.GHCR_IMAGE }}:latest contains version: ${{ env.VERSION_TAG }}"
-
-      # Build version specific
-      - name: Build & Push - version specific
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          file: ./Dockerfile
-          no-cache: false
-          platforms: linux/amd64,linux/arm/v7,linux/arm64
-          push: true
-          tags: ghcr.io/${{ env.GHCR_IMAGE }}:${{ env.VERSION_TAG }}
-          labels: ${{ steps.meta.outputs.labels }}
-
       # # Patch dockerfile to remove healthcheck
       # - name: Patch Dockerfile to remove healthcheck
       #   run: sed '/^HEALTHCHECK /d' < Dockerfile > Dockerfile.nohealthcheck
