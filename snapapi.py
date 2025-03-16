@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 # this gets our env vars from docker-compose.yaml, but Selenium/Chromium crashes. No idea why.
-##!/command/with-contenv python3
+# ##!/command/with-contenv python3
 
 import responder
 
@@ -25,11 +25,11 @@ log.setLevel(logging.DEBUG)  # notset, debug, info, warning, error, critical
 
 api = responder.API(enable_hsts=False)
 
-#BASE_URL = os.environ.get('BASE_URL', 'https://adsb.lol/')
+# BASE_URL = os.environ.get('BASE_URL', 'https://adsb.lol/')
 print("EEE", os.environ)
 BASE_URL = os.environ.get('BASE_URL', 'https://globe.adsb.fi/')
 LOAD_SLEEP_TIME = float(os.environ.get('LOAD_SLEEP_TIME', 12))
-#MAP_ARGS = os.environ.get('MAP_ARGS', 'zoom=11&hideSidebar&hideButtons&mapDim=0')
+# MAP_ARGS = os.environ.get('MAP_ARGS', 'zoom=11&hideSidebar&hideButtons&mapDim=0')
 MAP_ARGS = os.environ.get('MAP_ARGS', 'zoom=11&hideSidebar&hideButtons&mapDim=0.3')
 PAGE_ZOOM = int(os.environ.get('PAGE_ZOOM', '150'))
 DISABLE_SHM = bool(os.environ.get('DISABLE_SHM'))
