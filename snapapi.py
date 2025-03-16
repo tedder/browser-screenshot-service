@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
 
+# this gets our env vars from docker-compose.yaml, but Selenium/Chromium crashes. No idea why.
+##!/command/with-contenv python3
+
 import responder
 
 # yes, recursive is needed. it isn't all imported by default.
@@ -22,14 +25,24 @@ log.setLevel(logging.DEBUG)  # notset, debug, info, warning, error, critical
 
 api = responder.API()
 
-BASE_URL = os.environ.get('BASE_URL', 'https://adsb.lol/')
-LOAD_SLEEP_TIME = float(os.environ.get('LOAD_SLEEP_TIME', 1))
-MAP_ARGS = os.environ.get('MAP_ARGS', 'zoom=11&hideSidebar&hideButtons&mapDim=0')
-PAGE_ZOOM = int(os.environ.get('PAGE_ZOOM', '100'))
+#BASE_URL = os.environ.get('BASE_URL', 'https://adsb.lol/')
+print("EEE", os.environ)
+BASE_URL = os.environ.get('BASE_URL', 'https://globe.adsb.fi/')
+LOAD_SLEEP_TIME = float(os.environ.get('LOAD_SLEEP_TIME', 12))
+#MAP_ARGS = os.environ.get('MAP_ARGS', 'zoom=11&hideSidebar&hideButtons&mapDim=0')
+MAP_ARGS = os.environ.get('MAP_ARGS', 'zoom=11&hideSidebar&hideButtons&mapDim=0.3')
+PAGE_ZOOM = int(os.environ.get('PAGE_ZOOM', '150'))
 DISABLE_SHM = bool(os.environ.get('DISABLE_SHM'))
 DISABLE_VIZ = bool(os.environ.get('DISABLE_VIZ'))
 MAXTIME = int(os.environ.get('MAXTIME', '30'))
-WINDOW_SIZE = os.environ.get('WINDOW_SIZE', '1200x1600')
+WINDOW_SIZE = os.environ.get('WINDOW_SIZE', '1200x1200')
+print(f"""bu {BASE_URL}
+LST: {LOAD_SLEEP_TIME}
+MA: {MAP_ARGS}
+PZ: {PAGE_ZOOM}
+MT: {MAXTIME}
+WS: {WINDOW_SIZE}
+""")
 
 
 @api.route('/snap')
