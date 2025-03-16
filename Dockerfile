@@ -22,6 +22,7 @@ RUN set -x && \
     TEMP_PACKAGES+=(python3-httptools) && \
     KEPT_PACKAGES+=(python3-selenium) && \
     KEPT_PACKAGES+=(python3-uvicorn) && \
+    KEPT_PACKAGES+=(python3-uvloop) && \
     \
     # Install packages \
     apt-get update && \
