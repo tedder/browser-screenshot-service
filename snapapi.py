@@ -31,6 +31,7 @@ DISABLE_VIZ = bool(os.environ.get('DISABLE_VIZ'))
 MAXTIME = int(os.environ.get('MAXTIME', '30'))
 WINDOW_SIZE = os.environ.get('WINDOW_SIZE', '1200x1600')
 
+
 @api.route('/snap')
 @api.route('/snap/{icao}')
 async def snap_api(req, resp, *, icao=''):
